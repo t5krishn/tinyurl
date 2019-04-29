@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset = "utf-8">
+    <title> tiny url </title>
+    <link rel = "stylesheet" type = "text/css" href = "index.css">
+
+</head>
+
+<body>
+    <h1> tiny url </h1>
+
+    <form action = "/index.js">
+        <label id = "prompt"> First Name : </label>
+        <br>
+        <input type = "text" name = "url" id = "url_text">
+        <br>
+        <label id = "alias-label"> Alias (optional) : </label>
+        <br>
+        <input type = "text" name = "alias" id = "alias-textfield">
+        <br>
+        <input type = "submit" value = "Submit">
+        <div id = "url_res"> </div><!-- Server response printed to this div. Shortened url to this div-->
+    </form>
+
+    <script src="index.js"></script>
+</body>
+
+</html>

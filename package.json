@@ -1,0 +1,17 @@
+{
+	"name": "tiny-url",
+	"author": "T",
+	"version": "0.1.0",
+	"dependencies": {
+		"express": "^4.14.0",
+		"pg-promise": "^8.6.5"
+	},
+	"main": "index.js",
+	"scripts": {
+		"start": "node index.js"
+	},
+	"engines": {
+		"node": "4.4.5"
+	},
+	"license": "MIT"
+}
