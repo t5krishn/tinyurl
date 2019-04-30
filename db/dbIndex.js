@@ -1,22 +1,40 @@
 var express = require('express');
 var app = express();
-var port = 3000;
-var { Pool } = require('pg');
+var port = 3002;
+var pg  = require('pg');
+var assert = require('assert');
 
-var pool = new Pool();
+var config ={
+	user : 'postgres',
+	database: 'tinyurl',
+	password: 'HOMyONcLNaCdGMdl',
+	port: 3306,
+	host: '35.203.117.36'
+};
 
+var pool = new pg.Pool();
+var client = new pg.Client(config);
+var query = new pg.Query('SELECT NOW()');
 
-app.get('/', function (req, res) {
-  pool.query('SELECT * FROM tinurlTable', (err, res) => {
-    if (err) {
-      console.log(err.stack);
-    } else {
-      console.log(res.rows[0]);
-    }
-  });
+app.get('/:alias', function (req, res) {
+
+	client.connect();
+	var response = client.query('SELECT NOW()', (err,res) =>{});
+	assert(response == undefined);
+	client.end();
+	res.send('select from tinyurlTable: ' +  response);
+	
 });
 
 
+
+//
+// pool.connect(function(err,client,done){
+//	pool.query('SELECT * FROM tinyurlTable');
+//	done();
+// });
+
+// pool.end()
 
 // module.exports = {
 //   query: (text, params, callback) => {
