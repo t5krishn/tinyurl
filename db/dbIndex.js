@@ -1,39 +1,40 @@
-// var express = require('express');
-// var app = express();
-// var port = 3000;
+var express = require('express');
+var app = express();
+var port = 3000;
+var { Pool } = require('pg');
+
+var pool = new Pool();
 
 
-// var pgp = require('pg-promise')(/* options */);
-// var db = pgp('postgres://username:password@host:port/database');
-
-// db.one('SELECT $1 AS value', 123)
-//   .then(function (data) {
-//     console.log('DATA:', data.value);
-//   })
-//   .catch(function (error) {
-//     console.log('ERROR:', error);
-// });
-
-
-const { Pool, Client } = require('pg');
-
-// pools will use environment variables
-// for connection information
-const pool = new Pool();
-
-pool.query('SELECT NOW()', (err, res) => {
-  console.log(err, res);
-  pool.end();
+app.get('/', function (req, res) {
+  pool.query('SELECT * FROM tinurlTable', (err, res) => {
+    if (err) {
+      console.log(err.stack);
+    } else {
+      console.log(res.rows[0]);
+    }
+  });
 });
 
-// you can also use async/await
-const res = await pool.query('SELECT NOW()');
-await pool.end();
 
-// clients will also use environment variables
-// for connection information
-const client = new Client();
-await client.connect();
 
-const res = await client.query('SELECT NOW()');
-await client.end();
+// module.exports = {
+//   query: (text, params, callback) => {
+//     // var start = Date.now();
+//     return pool.query(text, params, (err, res) => {
+//       // var duration = Date.now() - start;
+//       // console.log('executed query', { text, duration, rows: res.rowCount });
+//       callback(err, res);
+//     });
+//   }
+// };
+
+
+// CREATE TABLE tinyurlTable (
+//   alias            varchar(80),
+//   longurl         varchar(100)
+// );
+
+
+
+app.listen(port, () => console.log(`Example app listening on port ${port}!`));
