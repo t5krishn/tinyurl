@@ -50,9 +50,9 @@ app.get('/url/:alias', function (req, response) {
       connectionString: process.env.DATABASE_URL,
       ssl: true,
   });
-    client.connect();
+  client.connect();
 
-  client.query('SELECT longurl FROM tinyurltable WHERE alias=$1', [req.params.alias], (err, res) => {
+  client.query('SELECT * FROM tinyurltable WHERE alias=$1', [req.params.alias], (err, res) => {
     if(res == undefined){
       console.log(err,res);
       response.sendFile(__dirname + '/front/index.html');
@@ -75,7 +75,7 @@ app.post('/url',urlencodedParser,function(req,response){
     client.connect();
 
   if(req.body.alias != ''){
-    client.query('SELECT * FROM tinyurltable', (err, res) => {
+    client.query('SELECT alias FROM tinyurltable WHERE $1',[req.body.alias], (err, res) => {
       if (err) throw err;
       if(res.rowCount > 0){
         response.sendFile(__dirname + '/front/index.html');
@@ -98,3 +98,11 @@ app.post('/url',urlencodedParser,function(req,response){
 
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+
+
+// var ID = function () {
+//   // Math.random should be unique because of its seeding algorithm.
+//   // Convert it to base 36 (numbers + letters), and grab the first 9 characters
+//   // after the decimal.
+//   return '_' + Math.random().toString(36).substr(2, 9);
+// };
