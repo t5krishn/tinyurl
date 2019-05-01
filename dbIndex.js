@@ -2,8 +2,12 @@ var express = require('express');
 var app = express();
 var pg  = require('pg');
 var bodyParser = require('body-parser');
-const {user, password, database, host} = require("./.configdb");
-var port = 3000;
+const {user, password, database, host}= require("./.configdb");
+var port = process.env.PORT;
+
+if (port == null || port == "") {
+  port = 3000;
+}
 
 var urlencodedParser = bodyParser.urlencoded({extended: false});
 
@@ -31,7 +35,7 @@ app.get('/', function (req, res) {
 app.get('/url/:alias', function (req, response) {
     var pool = new pg.Pool(config);
     pool.query('SELECT * FROM tinyurlTable WHERE alias=$1', [req.params.alias], (err, res) => {
-      if(res.rowCount == 0){
+      if(res == undefined){
         response.sendFile(__dirname + '/front/index.html');
         // Run alert/update page saying that alias is not registered
       }else{
