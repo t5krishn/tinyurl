@@ -11,10 +11,10 @@ if (port == null || port == "") {
 
 var urlencodedParser = bodyParser.urlencoded({extended: false});
 
-// const client = new Client({
-//   connectionString: process.env.DATABASE_URL,
-//   ssl: true,
-// });
+const client = new Client({
+  connectionString: process.env.DATABASE_URL,
+  ssl: true,
+});
 
 
 // USED FOR LOCAL DB CONFIG
@@ -49,10 +49,10 @@ app.get('/', function (req, res) {
 // });
 
 app.get('/url/:alias', function (req, response) {
-  const client = new Client({
-      connectionString: process.env.DATABASE_URL,
-      ssl: true,
-  });
+  // const client = new Client({
+  //     connectionString: process.env.DATABASE_URL,
+  //     ssl: true,
+  // });
     client.connect();
 
   client.query('SELECT longurl FROM tinyurltable WHERE alias=$1', [req.params.alias], (err, res) => {
@@ -69,31 +69,31 @@ app.get('/url/:alias', function (req, response) {
 });
 
 
-app.post('/url',urlencodedParser,function(req,res){
+app.post('/url',urlencodedParser,function(req,response){
   console.log(req.body.alias);
-  const client = new Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: true,
-  });  
+  // const client = new Client({
+  //   connectionString: process.env.DATABASE_URL,
+  //   ssl: true,
+  // });  
     client.connect();
 
-  // if(req.body.alias != ''){
+  if(req.body.alias != ''){
     client.query('SELECT * FROM tinyurltable', (err, res) => {
       if (err) throw err;
-      // if(res.rowCount > 0){
-      //   response.sendFile(__dirname + '/front/index.html');
-      //   // Run alert/update page saying that alias is not registered
-      // }else{
-      console.log(err, res);
-      //   client.query('INSERT INTO tinyurltable (alias, longurl) VALUES ($1,$2)', [req.body.alias, req.body.url], (err, res) => {
-      //     console.log(err, res);
-      //   });
-      //   response.sendFile(__dirname + '/front/index.html'); /* send page saying successful entering to db */
-      // }
+      if(res.rowCount > 0){
+        response.sendFile(__dirname + '/front/index.html');
+        // Run alert/update page saying that alias is not registered
+      }else{
+        console.log(err, res);
+        client.query('INSERT INTO tinyurltable (alias, longurl) VALUES ($1,$2)', [req.body.alias, req.body.url], (err, res) => {
+          console.log(err, res);
+        });
+        response.sendFile(__dirname + '/front/index.html'); /* send page saying successful entering to db */
+      }
       
-      client.end();  
+      // client.end();  
     });
-  // }
+  }
  /* Send a html file instead confirming the request and whether they want to submit another one */
   // ?first=firstname&last=lastname
 });
