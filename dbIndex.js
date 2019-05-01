@@ -145,6 +145,7 @@ async function inTable(alias) {
     }); 
     client.connect();
     const response = await client.query('SELECT * FROM tinyurltable WHERE alias=$1',[alias]);
+    client.end();
     if(response.rowCount > 0) {
       return true;
     }
