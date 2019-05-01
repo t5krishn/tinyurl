@@ -13,7 +13,7 @@
 		"start": "node dbIndex.js"
 	},
 	"engines": {
-		"node": "4.6"
+		"node": "11.0"
 	},
 	"license": "MIT"
 }

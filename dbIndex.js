@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 var pg  = require('pg');
 var bodyParser = require('body-parser');
-const {user, password, database, host}= require("./.configdb");
+// const {user, password, database, host}= require("./.configdb");
 var port = process.env.PORT;
 
 if (port == null || port == "") {
@@ -11,49 +11,48 @@ if (port == null || port == "") {
 
 var urlencodedParser = bodyParser.urlencoded({extended: false});
 
-const config ={
-  user: user,
-  password: password,
-  database: database,
-  host: host
-};
-
-// var pool = new pg.Pool(config);
 
 
 
-// pool.query('SELECT alias FROM tinyurlTable', (err, res) => {
-//   console.log(err, res.rowCount >0);
-//   pool.end();
-// });
+// const config ={
+//   user: user,
+//   password: password,
+//   database: database,
+//   host: host
+// };
+
+
 
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/front/index.html');
 });
 
 
-app.get('/url/:alias', function (req, response) {
-    var pool = new pg.Pool(config);
-    pool.query('SELECT * FROM tinyurlTable WHERE alias=$1', [req.params.alias], (err, res) => {
-      if(res == undefined){
-        response.sendFile(__dirname + '/front/index.html');
-        // Run alert/update page saying that alias is not registered
-      }else{
-        console.log(err, res.rows[0].longurl);
-        response.redirect(res.rows[0].longurl);
-      }
-      pool.end();
-    });
-});
+// app.get('/url/:alias', function (req, response) {
+//     var pool = new pg.Pool({
+//       connectionString: process.env.DATABASE_URL,
+//       ssl: true,
+//     });
+//     pool.query('SELECT * FROM tinyurlTable WHERE alias=$1', [req.params.alias], (err, res) => {
+//       if(res == undefined){
+//         response.sendFile(__dirname + '/front/index.html');
+//         // Run alert/update page saying that alias is not registered
+//       }else{
+//         console.log(err, res.rows[0].longurl);
+//         response.redirect(res.rows[0].longurl);
+//       }
+//       pool.end();
+//     });
+// });
 
 
-app.post('/url',urlencodedParser,function(req,res){
-  console.log(req.body.url);
+// app.post('/url',urlencodedParser,function(req,res){
+//   console.log(req.body.url);
 
 
-  res.send("Submitted");/* Send a html file instead confirming the request and whether they want to submit another one */
-  // ?first=firstname&last=lastname
-});
+//   res.send("Submitted");/* Send a html file instead confirming the request and whether they want to submit another one */
+//   // ?first=firstname&last=lastname
+// });
 //
 // pool.connect(function(err,client,done){
 //	pool.query('SELECT * FROM tinyurlTable');
