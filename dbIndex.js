@@ -52,7 +52,7 @@ app.get('/r/:alias', function (req, response) {
   });
   client.connect();
 
-  inTable(req.body.alias).then(function(inTableResult){
+  inTable(req.params.alias).then(function(inTableResult){
     if(inTableResult){
       console.log(err,res);
       // response.sendFile(__dirname + '/front/index.html');
