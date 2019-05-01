@@ -81,27 +81,31 @@ app.post('/url',urlencodedParser,function(req,response){
   if(req.body.alias != ''){
     client.query('SELECT * FROM tinyurltable WHERE alias=$1',[req.body.alias], (err, res) => {
       if (err) throw err;
-      // console.log(err);
+      console.log('select run');
       if(res.rowCount > 0){
         isPresent = true;
       }
       client.end();
     });
+    console.log('before present if');
 
     if(isPresent){
       response.sendFile(__dirname + '/front/index.html');
       // Run alert/update page saying that alias is already registered
 
     }else{
+      console.log('client2 init+connect');
       const client2 = new Client({
         connectionString: process.env.DATABASE_URL,
         ssl: true,
       });  
       client2.connect();
+      console.log('client 2 connected');
       // console.log([req.body.alias, req.body.url]);
       client2.query('INSERT INTO tinyurltable (alias, longurl) VALUES ($1,$2)', [req.body.alias, req.body.url], (err, res) => {
         console.log(err, res);
       });
+      console.log('client2 insert run');
       client2.end();
       response.send('successful entry'); /* send page saying successful entering to db */
     }
