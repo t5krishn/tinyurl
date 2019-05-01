@@ -62,7 +62,7 @@ app.get('/r/:alias', function (req, response) {
       '<h2> Alias not found</h2>'+
       '<br>'+
       '<p>Return to main page to create a tinyurl</p>'+
-      '<br><button value="tinyurl" onclick="location.href = \'https://t-tinyurl.herokuapp.com\';"</button>'));
+      '<br><button onclick="location.href = \'https://t-tinyurl.herokuapp.com\';">tinyurl</button>'));
     }else{
       console.log(err, res);
       response.redirect(res.rows[0].longurl);
