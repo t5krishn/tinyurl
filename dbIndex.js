@@ -52,8 +52,8 @@ app.get('/r/:alias', function (req, response) {
   });
   client.connect();
 
-  client.query('SELECT * FROM tinyurltable WHERE alias=$1', [req.params.alias], (err, res) => {
-    if(res.rowCount == 0){
+  inTable(req.body.alias).then(function(inTableResult){
+    if(inTableResult){
       console.log(err,res);
       // response.sendFile(__dirname + '/front/index.html');
       // Run alert/update page saying that alias is not registered
