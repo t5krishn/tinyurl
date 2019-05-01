@@ -80,9 +80,10 @@ app.post('/url',urlencodedParser,function(req,response){
   console.log(req.body.alias);
 
   if(req.body.alias != ''){/* IF ALIAS IS NOT EMPTY, IF IT'S EMPTY GENERATE A UNIQUE STRING AS ALIAS */
+    console.log("defined?"+isPresent);
 
     var isPresent = inTable(req.params.alias);
-
+    console.log("after"+isPresent);
 
     if(isPresent){
       response.set('Content-Type', 'text/html');
