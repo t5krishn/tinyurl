@@ -63,7 +63,7 @@ app.get('/url/:alias', function (req, response) {
 
 
 app.post('/url',urlencodedParser,function(req,res){
-  console.log(req.body.url);
+  console.log(req.body);
 
 
   res.send("Submitted");/* Send a html file instead confirming the request and whether they want to submit another one */
