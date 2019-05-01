@@ -33,7 +33,7 @@ app.get('/init', function (req, res) {
     connectionString: process.env.DATABASE_URL,
     ssl: true,
   });
-  pool.query("CREATE TABLE tinyurltable (alias VARCHAR (80) UNIQUE NOT NULL, longurl VARCHAR (1000) NOT NULL;", 
+  pool.query("CREATE TABLE tinyurltable (alias VARCHAR (80) UNIQUE NOT NULL, longurl VARCHAR (1000) NOT NULL);", 
     [req.params.alias], (err, res) => {
       console.log(err, res);
   });
