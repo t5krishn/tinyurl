@@ -81,7 +81,6 @@ app.post('/url',urlencodedParser,function(req,response){
 
   if(req.body.alias != ''){/* IF ALIAS IS NOT EMPTY, IF IT'S EMPTY GENERATE A UNIQUE STRING AS ALIAS */
 
-    // var isPresent = '';
     inTable(req.params.alias).then(function(inTableResult){
       if(inTableResult){
         response.set('Content-Type', 'text/html');
@@ -92,7 +91,6 @@ app.post('/url',urlencodedParser,function(req,response){
         '<br><button onclick="location.href = \'https://t-tinyurl.herokuapp.com\';">tinyurl</button>'+
         '<p>Or go to your url:</p>'+
         '<br><a href="https://t-tinyurl.herokuapp.com/r/'+req.body.alias+'"> t-tinyurl.herokuapp.com/r/'+req.body.alias+'</a>'));
-        // Run alert/update page saying that alias is already registered
   
       }else{
         // var inserted = '';
@@ -117,16 +115,10 @@ app.post('/url',urlencodedParser,function(req,response){
         });
         
       }
-    });
-    // console.log("after"+isPresent);
-
-    
-        
+    });      
   }else{
     // generate unique id as alias
   }
- /* Send a html file instead confirming the request and whether they want to submit another one */
-  // ?first=firstname&last=lastname
 });
 
 
@@ -151,6 +143,7 @@ async function inTable(alias) {
     client.connect();
     const response = await client.query('SELECT * FROM tinyurltable WHERE alias=$1',[alias]);
     client.end();
+    console.log(response);
     if(response.rowCount > 0) {
       return true;
     }
