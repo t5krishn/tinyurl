@@ -10,7 +10,7 @@
 	},
 	"main": "index.js",
 	"scripts": {
-		"start": "node index.js"
+		"start": "node dbIndex.js"
 	},
 	"engines": {
 		"node": "4.6"
