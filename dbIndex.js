@@ -81,40 +81,46 @@ app.post('/url',urlencodedParser,function(req,response){
 
   if(req.body.alias != ''){/* IF ALIAS IS NOT EMPTY, IF IT'S EMPTY GENERATE A UNIQUE STRING AS ALIAS */
 
-    var isPresent = inTable(req.params.alias);
-    console.log("after"+isPresent.then);
-
-    if(isPresent){
-      response.set('Content-Type', 'text/html');
-      response.send(new Buffer(''+
-      '<h2> Alias already registered</h2>'+
-      '<br>'+
-      '<p>Return to main page to create another tinyurl</p>'+
-      '<br><button onclick="location.href = \'https://t-tinyurl.herokuapp.com\';">tinyurl</button>'+
-      '<p>Or go to your url:</p>'+
-      '<br><a href="https://t-tinyurl.herokuapp.com/r/'+req.body.alias+'"> t-tinyurl.herokuapp.com/r/'+req.body.alias+'</a>'));
-      // Run alert/update page saying that alias is already registered
-
-    }else{
-      var inserted = insert(req.body.alias, req.body.url);
-      if(inserted){
+    // var isPresent = '';
+    inTable(req.params.alias).then(function(inTableResult){
+      if(inTableResult){
         response.set('Content-Type', 'text/html');
         response.send(new Buffer(''+
-        '<h2> Alias registered!</h2>'+
+        '<h2> Alias already registered</h2>'+
         '<br>'+
         '<p>Return to main page to create another tinyurl</p>'+
         '<br><button onclick="location.href = \'https://t-tinyurl.herokuapp.com\';">tinyurl</button>'+
-        '<p>Or go to your NEW url:</p>'+
+        '<p>Or go to your url:</p>'+
         '<br><a href="https://t-tinyurl.herokuapp.com/r/'+req.body.alias+'"> t-tinyurl.herokuapp.com/r/'+req.body.alias+'</a>'));
+        // Run alert/update page saying that alias is already registered
+  
       }else{
-        response.set('Content-Type', 'text/html');
-        response.send(new Buffer(''+
-        '<h2> Alias register unsucessful!</h2>'+
-        '<br>'+
-        '<p>Return to main page to try again</p>'+
-        '<br><button onclick="location.href = \'https://t-tinyurl.herokuapp.com\';">tinyurl</button>'));
+        // var inserted = '';
+        insert(req.body.alias, req.body.url).then(function(insertResult){
+          if(insertResult){
+            response.set('Content-Type', 'text/html');
+            response.send(new Buffer(''+
+            '<h2> Alias registered!</h2>'+
+            '<br>'+
+            '<p>Return to main page to create another tinyurl</p>'+
+            '<br><button onclick="location.href = \'https://t-tinyurl.herokuapp.com\';">tinyurl</button>'+
+            '<p>Or go to your NEW url:</p>'+
+            '<br><a href="https://t-tinyurl.herokuapp.com/r/'+req.body.alias+'"> t-tinyurl.herokuapp.com/r/'+req.body.alias+'</a>'));
+          }else{
+            response.set('Content-Type', 'text/html');
+            response.send(new Buffer(''+
+            '<h2> Alias register unsucessful!</h2>'+
+            '<br>'+
+            '<p>Return to main page to try again</p>'+
+            '<br><button onclick="location.href = \'https://t-tinyurl.herokuapp.com\';">tinyurl</button>'));
+          }
+        });
+        
       }
-    }
+    });
+    // console.log("after"+isPresent);
+
+    
         
   }else{
     // generate unique id as alias
@@ -146,15 +152,14 @@ async function inTable(alias) {
     const response = await client.query('SELECT * FROM tinyurltable WHERE alias=$1',[alias]);
     client.end();
     if(response.rowCount > 0) {
-      resolve(true) ;
+      return true;
     }
     else {
-      // return false;
-      reject(false);
+      return false;
     }
   }
   catch (rejectedValue) {
-    console.log(rejectedValue);
+    console.log("rejectedValue.stack= "+ rejectedValue.stack);
     // return false;
   }
 }
