@@ -81,7 +81,7 @@ app.post('/url',urlencodedParser,function(req,response){
 
   if(req.body.alias != ''){/* IF ALIAS IS NOT EMPTY, IF IT'S EMPTY GENERATE A UNIQUE STRING AS ALIAS */
 
-  var isPresent = inTable(req.params.alias);
+    var isPresent = inTable(req.params.alias);
 
 
     if(isPresent){
@@ -96,25 +96,28 @@ app.post('/url',urlencodedParser,function(req,response){
       // Run alert/update page saying that alias is already registered
 
     }else{
-      console.log('client2 init+connect');
-      const client2 = new Client({
-        connectionString: process.env.DATABASE_URL,
-        ssl: true,
-      });  
-      client2.connect();
-      console.log('client 2 connected');
-      // console.log([req.body.alias, req.body.url]);
-      try{
-        const res = await (client2.query('INSERT INTO tinyurltable (alias, longurl) VALUES ($1,$2)', [req.body.alias, req.body.url]));
-
-        console.log('client2 insert run');
-        client2.end();
-        response.send('successful entry'); /* send page saying successful entering to db */
-      }catch(err){
-        console.log(err.stack);
+      var inserted = insert(req.body.alias, req.body.url);
+      if(inserted){
+        response.set('Content-Type', 'text/html');
+        response.send(new Buffer(''+
+        '<h2> Alias registered!</h2>'+
+        '<br>'+
+        '<p>Return to main page to create another tinyurl</p>'+
+        '<br><button onclick="location.href = \'https://t-tinyurl.herokuapp.com\';">tinyurl</button>'+
+        '<p>Or go to your NEW url:</p>'+
+        '<br><a href="https://t-tinyurl.herokuapp.com/r/'+req.body.alias+'"> t-tinyurl.herokuapp.com/r/'+req.body.alias+'</a>'));
+      }else{
+        response.set('Content-Type', 'text/html');
+        response.send(new Buffer(''+
+        '<h2> Alias register unsucessful!</h2>'+
+        '<br>'+
+        '<p>Return to main page to try again</p>'+
+        '<br><button onclick="location.href = \'https://t-tinyurl.herokuapp.com\';">tinyurl</button>'));
       }
     }
         
+  }else{
+    // generate unique id as alias
   }
  /* Send a html file instead confirming the request and whether they want to submit another one */
   // ?first=firstname&last=lastname
@@ -150,5 +153,21 @@ async function inTable(alias) {
   }
   catch (rejectedValue) {
     console.log(rejectedValue);
+  }
+}
+
+async function insert(alias,url){
+  try {
+    const client = new Client({
+      connectionString: process.env.DATABASE_URL,
+      ssl: true,
+    }); 
+    client.connect();
+    const response = await client.query('INSERT INTO tinyurltable (alias, longurl) VALUES ($1,$2)',[alias,url]);
+    client.end();
+    return true;
+  }catch(rejectedValue){
+    console.log(rejectedValue);
+    return false;
   }
 }
