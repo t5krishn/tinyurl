@@ -81,7 +81,7 @@ app.post('/url',urlencodedParser,function(req,response){
 
   if(req.body.alias != ''){/* IF ALIAS IS NOT EMPTY, IF IT'S EMPTY GENERATE A UNIQUE STRING AS ALIAS */
 
-    inTable(req.params.alias).then(function(inTableResult){
+    inTable(req.body.alias).then(function(inTableResult){
       if(inTableResult){
         response.set('Content-Type', 'text/html');
         response.send(new Buffer(''+
@@ -141,7 +141,7 @@ async function inTable(alias) {
       ssl: true,
     }); 
     client.connect();
-    const response = await client.query('SELECT * FROM tinyurltable WHERE alias=$1',alias);
+    const response = await client.query('SELECT * FROM tinyurltable WHERE alias=$1',[alias]);
     client.end();
     console.log(response);
     if(response.rowCount > 0) {
