@@ -112,12 +112,15 @@ app.post('/url',urlencodedParser,function(req,response){
       client2.connect();
       console.log('client 2 connected');
       // console.log([req.body.alias, req.body.url]);
-      client2.query('INSERT INTO tinyurltable (alias, longurl) VALUES ($1,$2)', [req.body.alias, req.body.url], (err, res) => {
-        console.log(err, res);
-      });
-      console.log('client2 insert run');
-      client2.end();
-      response.send('successful entry'); /* send page saying successful entering to db */
+      try{
+        const res = await (client2.query('INSERT INTO tinyurltable (alias, longurl) VALUES ($1,$2)', [req.body.alias, req.body.url]));
+
+        console.log('client2 insert run');
+        client2.end();
+        response.send('successful entry'); /* send page saying successful entering to db */
+      }catch(err){
+        console.log(err.stack);
+      }
     }
         
   }
