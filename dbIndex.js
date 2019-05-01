@@ -80,10 +80,9 @@ app.post('/url',urlencodedParser,function(req,response){
   console.log(req.body.alias);
 
   if(req.body.alias != ''){/* IF ALIAS IS NOT EMPTY, IF IT'S EMPTY GENERATE A UNIQUE STRING AS ALIAS */
-    console.log("defined?"+isPresent);
 
     var isPresent = inTable(req.params.alias);
-    console.log("after"+isPresent);
+    console.log("after"+isPresent.then);
 
     if(isPresent){
       response.set('Content-Type', 'text/html');
@@ -147,15 +146,16 @@ async function inTable(alias) {
     const response = await client.query('SELECT * FROM tinyurltable WHERE alias=$1',[alias]);
     client.end();
     if(response.rowCount > 0) {
-      return true;
+      resolve(true) ;
     }
     else {
-      return false;
+      // return false;
+      reject(false);
     }
   }
   catch (rejectedValue) {
     console.log(rejectedValue);
-    return false;
+    // return false;
   }
 }
 
