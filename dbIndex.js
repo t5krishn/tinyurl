@@ -81,11 +81,11 @@ app.post('/url',urlencodedParser,function(req,response){
         response.sendFile(__dirname + '/front/index.html');
         // Run alert/update page saying that alias is already registered
       }else{
-        console.log(err, res);
+        console.log([req.body.alias, req.body.url]);
         client.query('INSERT INTO tinyurltable (alias, longurl) VALUES ($1,$2)', [req.body.alias, req.body.url], (err, res) => {
-          console.log(err, res);
+          // console.log(err, res);
         });
-        response.sendFile(__dirname + '/front/index.html'); /* send page saying successful entering to db */
+        response.send('successful entry'); /* send page saying successful entering to db */
       }
       
       client.end();  
