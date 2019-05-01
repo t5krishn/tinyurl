@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 var { Client }  = require('pg');
 var bodyParser = require('body-parser');
-// const {user, password, database, host}= require("./.configdb");
+// const {user, password, database, host}= require("./.configdb"); // USED FOR LOCAL DB CONFIG
 var port = process.env.PORT;
 
 if (port == null || port == "") {
@@ -11,9 +11,13 @@ if (port == null || port == "") {
 
 var urlencodedParser = bodyParser.urlencoded({extended: false});
 
+const client = new Client({
+  connectionString: process.env.DATABASE_URL,
+  ssl: true,
+});
 
 
-
+// USED FOR LOCAL DB CONFIG
 // const config ={
 //   user: user,
 //   password: password,
@@ -45,19 +49,20 @@ app.get('/', function (req, res) {
 // });
 
 app.get('/url/:alias', function (req, response) {
-  const client = new Client({
-      connectionString: process.env.DATABASE_URL,
-      ssl: true,
-  });
+  // const client = new Client({
+  //     connectionString: process.env.DATABASE_URL,
+  //     ssl: true,
+  // });
   client.query('SELECT longurl FROM tinyurltable WHERE alias=$1', [req.params.alias], (err, res) => {
     if(res == undefined){
+      console.log(err,res);
       response.sendFile(__dirname + '/front/index.html');
       // Run alert/update page saying that alias is not registered
     }else{
       console.log(err, res);
-      // response.redirect(res.rows[0].longurl);
+      response.redirect(res.rows[0].longurl);
     }
-    client.end();
+    // client.end();
   });
 });
 
@@ -65,8 +70,21 @@ app.get('/url/:alias', function (req, response) {
 app.post('/url',urlencodedParser,function(req,res){
   console.log(req.body);
 
-
-  res.send("Submitted");/* Send a html file instead confirming the request and whether they want to submit another one */
+  if(req.body.alias != ''){
+    client.query('SELECT * FROM tinyurltable WHERE alias=$1', [req.body.alias], (err, res) => {
+      if(res.rowCount > 0){
+        response.sendFile(__dirname + '/front/index.html');
+        // Run alert/update page saying that alias is not registered
+      }else{
+        console.log(err, res);
+        client.query('INSERT INTO tinyurltable (alias, longurl) VALUES ($1,$2)', [req.body.alias, req.body.url], (err, res) => {
+          console.log(err, res);
+        });
+        response.sendFile(__dirname + '/front/index.html'); /* send page saying successful entering to db */
+      }
+    });
+  }
+ /* Send a html file instead confirming the request and whether they want to submit another one */
   // ?first=firstname&last=lastname
 });
 
