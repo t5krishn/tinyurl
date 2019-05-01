@@ -72,35 +72,27 @@ app.get('/r/:alias', function (req, response) {
 });
 
 
+
+
+
+
 app.post('/url',urlencodedParser,function(req,response){
   console.log(req.body.alias);
-  const client = new Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: true,
-  });  
-  
-
-  client.connect();
-
-  var isPresent = false;
 
   if(req.body.alias != ''){/* IF ALIAS IS NOT EMPTY, IF IT'S EMPTY GENERATE A UNIQUE STRING AS ALIAS */
 
-    try{
-      const res = await (client.query('SELECT * FROM tinyurltable WHERE alias=$1',[req.body.alias]));
-        console.log('select run');
-        if(res.rowCount > 0){
-          isPresent = true;
-        }
-        client.end();
-      console.log('before present if');
-    } catch (err){
-      console.log(err.stack);
-    }
+  var isPresent = inTable(req.params.alias);
 
 
     if(isPresent){
-      response.sendFile(__dirname + '/front/index.html');
+      response.set('Content-Type', 'text/html');
+      response.send(new Buffer(''+
+      '<h2> Alias already registered</h2>'+
+      '<br>'+
+      '<p>Return to main page to create another tinyurl</p>'+
+      '<br><button onclick="location.href = \'https://t-tinyurl.herokuapp.com\';">tinyurl</button>'+
+      '<p>Or go to your url:</p>'+
+      '<br><a href="https://t-tinyurl.herokuapp.com/"'+req.params.alias+'> t-tinyurl.herokuapp.com/r/'+req.params.alias+'</a>'));
       // Run alert/update page saying that alias is already registered
 
     }else{
@@ -139,3 +131,24 @@ app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 //   // after the decimal.
 //   return '_' + Math.random().toString(36).substr(2, 9);
 // };
+
+
+async function inTable(alias) {
+  try {
+    const client = new Client({
+      connectionString: process.env.DATABASE_URL,
+      ssl: true,
+    }); 
+    client.connect();
+    const response = await client.query('SELECT * FROM tinyurltable WHERE alias=$1',alias);
+    if(response.rowCount > 0) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+  catch (rejectedValue) {
+    console.log(rejectedValue);
+  }
+}
