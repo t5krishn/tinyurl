@@ -53,7 +53,7 @@ app.get('/url/:alias', function (req, response) {
   client.connect();
 
   client.query('SELECT * FROM tinyurltable WHERE alias=$1', [req.params.alias], (err, res) => {
-    if(res == undefined){
+    if(res.rowCount == 0){
       console.log(err,res);
       response.sendFile(__dirname + '/front/index.html');
       // Run alert/update page saying that alias is not registered
@@ -75,7 +75,7 @@ app.post('/url',urlencodedParser,function(req,response){
     client.connect();
 
   if(req.body.alias != ''){
-    client.query('SELECT alias FROM tinyurltable WHERE $1',[req.body.alias], (err, res) => {
+    client.query('SELECT * FROM tinyurltable WHERE alias=$1',[req.body.alias], (err, res) => {
       // if (err) throw err;
       if(res.rowCount > 0){
         response.sendFile(__dirname + '/front/index.html');
