@@ -79,7 +79,7 @@ app.post('/url',urlencodedParser,function(req,response){
       // if (err) throw err;
       if(res.rowCount > 0){
         response.sendFile(__dirname + '/front/index.html');
-        // Run alert/update page saying that alias is not registered
+        // Run alert/update page saying that alias is already registered
       }else{
         console.log(err, res);
         client.query('INSERT INTO tinyurltable (alias, longurl) VALUES ($1,$2)', [req.body.alias, req.body.url], (err, res) => {
@@ -88,7 +88,7 @@ app.post('/url',urlencodedParser,function(req,response){
         response.sendFile(__dirname + '/front/index.html'); /* send page saying successful entering to db */
       }
       
-      // client.end();  
+      client.end();  
     });
   }
  /* Send a html file instead confirming the request and whether they want to submit another one */
