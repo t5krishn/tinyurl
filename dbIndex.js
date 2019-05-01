@@ -72,10 +72,7 @@ app.post('/url',urlencodedParser,function(req,response){
     connectionString: process.env.DATABASE_URL,
     ssl: true,
   });  
-  const client2 = new Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: true,
-  });  
+  
 
     client1.connect();
 
@@ -88,6 +85,10 @@ app.post('/url',urlencodedParser,function(req,response){
         // Run alert/update page saying that alias is already registered
       }else{
         client1.end();
+        const client2 = new Client({
+          connectionString: process.env.DATABASE_URL,
+          ssl: true,
+        });  
         client2.connect();
         // console.log([req.body.alias, req.body.url]);
         client2.query('INSERT INTO tinyurltable (alias, longurl) VALUES ($1,$2)', [req.body.alias, req.body.url], (err, res) => {
