@@ -143,7 +143,7 @@ async function inTable(alias) {
       ssl: true,
     }); 
     client.connect();
-    const response = await client.query('SELECT * FROM tinyurltable WHERE alias=$1',alias);
+    const response = await client.query('SELECT * FROM tinyurltable WHERE alias=$1',[alias]);
     if(response.rowCount > 0) {
       return true;
     }
@@ -153,6 +153,7 @@ async function inTable(alias) {
   }
   catch (rejectedValue) {
     console.log(rejectedValue);
+    return false;
   }
 }
 
