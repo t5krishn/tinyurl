@@ -11,10 +11,10 @@ if (port == null || port == "") {
 
 var urlencodedParser = bodyParser.urlencoded({extended: false});
 
-const client = new Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: true,
-});
+// const client = new Client({
+//   connectionString: process.env.DATABASE_URL,
+//   ssl: true,
+// });
 
 
 // USED FOR LOCAL DB CONFIG
@@ -49,10 +49,10 @@ app.get('/', function (req, res) {
 // });
 
 app.get('/url/:alias', function (req, response) {
-  // const client = new Client({
-  //     connectionString: process.env.DATABASE_URL,
-  //     ssl: true,
-  // });
+  const client = new Client({
+      connectionString: process.env.DATABASE_URL,
+      ssl: true,
+  });
   client.query('SELECT longurl FROM tinyurltable WHERE alias=$1', [req.params.alias], (err, res) => {
     if(res == undefined){
       console.log(err,res);
@@ -62,14 +62,17 @@ app.get('/url/:alias', function (req, response) {
       console.log(err, res);
       response.redirect(res.rows[0].longurl);
     }
-    // client.end();
+    client.end();
   });
 });
 
 
 app.post('/url',urlencodedParser,function(req,res){
-  console.log(req.body);
-
+  // console.log(req.body);
+  const client = new Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: true,
+  });  
   if(req.body.alias != ''){
     client.query('SELECT * FROM tinyurltable WHERE alias=$1', [req.body.alias], (err, res) => {
       if(res.rowCount > 0){
@@ -82,6 +85,7 @@ app.post('/url',urlencodedParser,function(req,res){
         });
         response.sendFile(__dirname + '/front/index.html'); /* send page saying successful entering to db */
       }
+      client.end();  
     });
   }
  /* Send a html file instead confirming the request and whether they want to submit another one */
