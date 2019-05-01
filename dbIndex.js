@@ -57,8 +57,8 @@ app.get('/r/:alias', function (req, response) {
       console.log(err,res);
       // response.sendFile(__dirname + '/front/index.html');
       // Run alert/update page saying that alias is not registered
-      res.set('Content-Type', 'text/html');
-      res.send(new Buffer("<h2> ${req.params.alias} not found</h2><br><p>Return to main page to create a tinyurl</p><br><button onclick=\"location.href = 'https://t-tinyurl.herokuapp.com';\"</button>"));
+      response.set('Content-Type', 'text/html');
+      response.send(new Buffer("<h2> ${req.params.alias} not found</h2><br><p>Return to main page to create a tinyurl</p><br><button onclick=\"location.href = 'https://t-tinyurl.herokuapp.com';\"</button>"));
     }else{
       console.log(err, res);
       response.redirect(res.rows[0].longurl);
