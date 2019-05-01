@@ -74,7 +74,8 @@ app.post('/url',urlencodedParser,function(req,res){
     ssl: true,
   });  
   if(req.body.alias != ''){
-    client.query('SELECT * FROM tinyurltable WHERE alias=$1', [req.body.alias], (err, res) => {
+    client.query('SELECT * FROM tinyurltable', (err, res) => {
+      if (err) throw err;
       // if(res.rowCount > 0){
       //   response.sendFile(__dirname + '/front/index.html');
       //   // Run alert/update page saying that alias is not registered
