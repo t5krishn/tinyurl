@@ -68,17 +68,18 @@ app.get('/url/:alias', function (req, response) {
 
 app.post('/url',urlencodedParser,function(req,response){
   console.log(req.body.alias);
-  const client1 = new Client({
+  const client = new Client({
     connectionString: process.env.DATABASE_URL,
     ssl: true,
   });  
   
 
-    client1.connect();
+  client.connect();
 
   if(req.body.alias != ''){
-    client1.query('SELECT * FROM tinyurltable WHERE alias=$1',[req.body.alias], (err, res) => {
+    client.query('SELECT * FROM tinyurltable WHERE alias=$1',[req.body.alias], (err, res) => {
       // if (err) throw err;
+      console.log(res);
       if(res.rowCount > 0){
         client1.end();
         response.sendFile(__dirname + '/front/index.html');
