@@ -45,7 +45,7 @@ app.get('/', function (req, res) {
 //   res.send("tinyurltable CREATED");
 // });
 
-app.get('/url/:alias', function (req, response) {
+app.get('/r/:alias', function (req, response) {
   const client = new Client({
       connectionString: process.env.DATABASE_URL,
       ssl: true,
@@ -55,8 +55,10 @@ app.get('/url/:alias', function (req, response) {
   client.query('SELECT * FROM tinyurltable WHERE alias=$1', [req.params.alias], (err, res) => {
     if(res.rowCount == 0){
       console.log(err,res);
-      response.sendFile(__dirname + '/front/index.html');
+      // response.sendFile(__dirname + '/front/index.html');
       // Run alert/update page saying that alias is not registered
+      res.set('Content-Type', 'text/html');
+      res.send(new Buffer("<h2> ${req.params.alias} not found</h2><br><p>Return to main page to create a tinyurl</p><br><button onclick=\"location.href = 'https://t-tinyurl.herokuapp.com';\"</button>"));
     }else{
       console.log(err, res);
       response.redirect(res.rows[0].longurl);
@@ -78,16 +80,20 @@ app.post('/url',urlencodedParser,function(req,response){
 
   var isPresent = false;
 
-  if(req.body.alias != ''){
-    client.query('SELECT * FROM tinyurltable WHERE alias=$1',[req.body.alias], (err, res) => {
-      if (err) throw err;
-      console.log('select run');
-      if(res.rowCount > 0){
-        isPresent = true;
-      }
-      client.end();
-    });
-    console.log('before present if');
+  if(req.body.alias != ''){/* IF ALIAS IS NOT EMPTY, IF IT'S EMPTY GENERATE A UNIQUE STRING AS ALIAS */
+
+    try{
+      const res = await (client.query('SELECT * FROM tinyurltable WHERE alias=$1',[req.body.alias]));
+        console.log('select run');
+        if(res.rowCount > 0){
+          isPresent = true;
+        }
+        client.end();
+      console.log('before present if');
+    } catch (err){
+      console.log(err.stack);
+    }
+
 
     if(isPresent){
       response.sendFile(__dirname + '/front/index.html');
