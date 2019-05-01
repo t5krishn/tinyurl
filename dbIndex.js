@@ -113,11 +113,33 @@ app.post('/url',urlencodedParser,function(req,response){
             '<br><button onclick="location.href = \'https://t-tinyurl.herokuapp.com\';">tinyurl</button>'));
           }
         });
-        
       }
     });      
   }else{
     // generate unique id as alias
+    ID().then (function(alias){
+      insert(alias, req.body.url).then(function(insertResult){
+
+        if(insertResult){
+          response.set('Content-Type', 'text/html');
+          response.send(new Buffer(''+
+          '<h2> Alias registered!</h2>'+
+          '<br>'+
+          '<p>Return to main page to create another tinyurl</p>'+
+          '<br><button onclick="location.href = \'https://t-tinyurl.herokuapp.com\';">tinyurl</button>'+
+          '<p>Or go to your NEW url:</p>'+
+          '<br><a href="https://t-tinyurl.herokuapp.com/r/'+alias+'"> t-tinyurl.herokuapp.com/r/'+alias+'</a>'));
+        }else{
+          response.set('Content-Type', 'text/html');
+          response.send(new Buffer(''+
+          '<h2> Alias register unsucessful!</h2>'+
+          '<br>'+
+          '<p>Return to main page to try again</p>'+
+          '<br><button onclick="location.href = \'https://t-tinyurl.herokuapp.com\';">tinyurl</button>'));
+        }
+
+      });
+    });
   }
 });
 
@@ -126,12 +148,23 @@ app.post('/url',urlencodedParser,function(req,response){
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
 
-// var ID = function () {
-//   // Math.random should be unique because of its seeding algorithm.
-//   // Convert it to base 36 (numbers + letters), and grab the first 9 characters
-//   // after the decimal.
-//   return '_' + Math.random().toString(36).substr(2, 9);
-// };
+async function ID() {
+   // Math.random should be unique because of its seeding algorithm.
+  // Convert it to base 36 (numbers + letters), and grab the first 9 characters
+  // after the decimal.
+  var possibleID = Math.random().toString(36).substr(2, 9);
+
+  inTable(possibleID).then(function(inTableResult){
+    if(inTableResult){
+      ID().then(function(alias){
+        return alias;
+      });
+    }else{
+      return possibleID;
+    }
+  });
+  
+}
 
 
 async function inTable(alias) {
@@ -143,7 +176,6 @@ async function inTable(alias) {
     client.connect();
     const response = await client.query('SELECT * FROM tinyurltable WHERE alias=$1',[alias]);
     client.end();
-    console.log(response);
     if(response.rowCount > 0) {
       return true;
     }
@@ -168,7 +200,7 @@ async function insert(alias,url){
     client.end();
     return true;
   }catch(rejectedValue){
-    console.log(rejectedValue);
-    return false;
+    console.log("rejectedValue.stack= "+ rejectedValue.stack);
+    // return false;
   }
 }
