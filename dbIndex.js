@@ -53,6 +53,8 @@ app.get('/url/:alias', function (req, response) {
       connectionString: process.env.DATABASE_URL,
       ssl: true,
   });
+    client.connect();
+
   client.query('SELECT longurl FROM tinyurltable WHERE alias=$1', [req.params.alias], (err, res) => {
     if(res == undefined){
       console.log(err,res);
@@ -73,6 +75,8 @@ app.post('/url',urlencodedParser,function(req,res){
     connectionString: process.env.DATABASE_URL,
     ssl: true,
   });  
+    client.connect();
+
   // if(req.body.alias != ''){
     client.query('SELECT * FROM tinyurltable', (err, res) => {
       if (err) throw err;
