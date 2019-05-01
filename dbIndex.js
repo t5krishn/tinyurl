@@ -92,7 +92,7 @@ app.post('/url',urlencodedParser,function(req,response){
       '<p>Return to main page to create another tinyurl</p>'+
       '<br><button onclick="location.href = \'https://t-tinyurl.herokuapp.com\';">tinyurl</button>'+
       '<p>Or go to your url:</p>'+
-      '<br><a href="https://t-tinyurl.herokuapp.com/'+req.body.alias+'"> t-tinyurl.herokuapp.com/r/'+req.body.alias+'</a>'));
+      '<br><a href="https://t-tinyurl.herokuapp.com/r/'+req.body.alias+'"> t-tinyurl.herokuapp.com/r/'+req.body.alias+'</a>'));
       // Run alert/update page saying that alias is already registered
 
     }else{
