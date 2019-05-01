@@ -28,6 +28,18 @@ app.get('/', function (req, res) {
 });
 
 
+app.get('/init', function (req, res) {
+  var pool = new pg.Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: true,
+  });
+  pool.query("CREATE TABLE tinyurltable (alias VARCHAR (80) UNIQUE NOT NULL, longurl VARCHAR (1000) NOT NULL;", 
+    [req.params.alias], (err, res) => {
+      console.log(err, res);
+  });
+  res.send("tinyurltable CREATED");
+});
+
 // app.get('/url/:alias', function (req, response) {
 //     var pool = new pg.Pool({
 //       connectionString: process.env.DATABASE_URL,
