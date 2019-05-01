@@ -76,30 +76,36 @@ app.post('/url',urlencodedParser,function(req,response){
 
   client.connect();
 
+  var isPresent = false;
+
   if(req.body.alias != ''){
     client.query('SELECT * FROM tinyurltable WHERE alias=$1',[req.body.alias], (err, res) => {
-      // if (err) throw err;
-      console.log(res);
+      if (err) throw err;
+      // console.log(err);
       if(res.rowCount > 0){
-        client1.end();
-        response.sendFile(__dirname + '/front/index.html');
-        // Run alert/update page saying that alias is already registered
-      }else{
-        client1.end();
-        const client2 = new Client({
-          connectionString: process.env.DATABASE_URL,
-          ssl: true,
-        });  
-        client2.connect();
-        // console.log([req.body.alias, req.body.url]);
-        client2.query('INSERT INTO tinyurltable (alias, longurl) VALUES ($1,$2)', [req.body.alias, req.body.url], (err, res) => {
-          console.log(err, res);
-        });
-        client2.end();
-        response.send('successful entry'); /* send page saying successful entering to db */
+        isPresent = true;
       }
-      
+      client.end();
     });
+
+    if(isPresent){
+      response.sendFile(__dirname + '/front/index.html');
+      // Run alert/update page saying that alias is already registered
+
+    }else{
+      const client2 = new Client({
+        connectionString: process.env.DATABASE_URL,
+        ssl: true,
+      });  
+      client2.connect();
+      // console.log([req.body.alias, req.body.url]);
+      client2.query('INSERT INTO tinyurltable (alias, longurl) VALUES ($1,$2)', [req.body.alias, req.body.url], (err, res) => {
+        console.log(err, res);
+      });
+      client2.end();
+      response.send('successful entry'); /* send page saying successful entering to db */
+    }
+        
   }
  /* Send a html file instead confirming the request and whether they want to submit another one */
   // ?first=firstname&last=lastname
