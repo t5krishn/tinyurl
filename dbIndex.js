@@ -68,23 +68,24 @@ app.get('/url/:alias', function (req, response) {
 
 
 app.post('/url',urlencodedParser,function(req,res){
-  // console.log(req.body);
+  console.log(req.body.alias);
   const client = new Client({
     connectionString: process.env.DATABASE_URL,
     ssl: true,
   });  
   if(req.body.alias != ''){
     client.query('SELECT * FROM tinyurltable WHERE alias=$1', [req.body.alias], (err, res) => {
-      if(res.rowCount > 0){
-        response.sendFile(__dirname + '/front/index.html');
-        // Run alert/update page saying that alias is not registered
-      }else{
-        console.log(err, res);
-        client.query('INSERT INTO tinyurltable (alias, longurl) VALUES ($1,$2)', [req.body.alias, req.body.url], (err, res) => {
-          console.log(err, res);
-        });
-        response.sendFile(__dirname + '/front/index.html'); /* send page saying successful entering to db */
-      }
+      // if(res.rowCount > 0){
+      //   response.sendFile(__dirname + '/front/index.html');
+      //   // Run alert/update page saying that alias is not registered
+      // }else{
+      console.log(err, res);
+      //   client.query('INSERT INTO tinyurltable (alias, longurl) VALUES ($1,$2)', [req.body.alias, req.body.url], (err, res) => {
+      //     console.log(err, res);
+      //   });
+      //   response.sendFile(__dirname + '/front/index.html'); /* send page saying successful entering to db */
+      // }
+      
       client.end();  
     });
   }
