@@ -1,6 +1,6 @@
 var express = require('express');
 var app = express();
-var pg  = require('pg');
+var { Client }  = require('pg');
 var bodyParser = require('body-parser');
 // const {user, password, database, host}= require("./.configdb");
 var port = process.env.PORT;
@@ -29,14 +29,24 @@ app.get('/', function (req, res) {
 
 
 app.get('/init', function (req, res) {
-  var pool = new pg.Pool({
+  // var pool = new pg.Pool({
+  //   connectionString: process.env.DATABASE_URL,
+  //   ssl: true,
+  // });
+
+  const client = new Client({
     connectionString: process.env.DATABASE_URL,
     ssl: true,
   });
-  pool.query("CREATE TABLE tinyurltable (alias VARCHAR (80) UNIQUE NOT NULL, longurl VARCHAR (1000) NOT NULL);", 
-    [req.params.alias], (err, res) => {
-      console.log(err, res);
-  });
+
+  client.connect();
+
+  client.query("CREATE TABLE tinyurltable (alias VARCHAR (80) UNIQUE NOT NULL, longurl VARCHAR (1000) NOT NULL);", 
+     (err, res) => {
+      if (err) throw err;
+      console.log(res);
+      client.end();  
+    });
   res.send("tinyurltable CREATED");
 });
 
