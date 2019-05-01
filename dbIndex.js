@@ -68,27 +68,35 @@ app.get('/url/:alias', function (req, response) {
 
 app.post('/url',urlencodedParser,function(req,response){
   console.log(req.body.alias);
-  const client = new Client({
+  const client1 = new Client({
     connectionString: process.env.DATABASE_URL,
     ssl: true,
   });  
-    client.connect();
+  const client2 = new Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: true,
+  });  
+
+    client1.connect();
 
   if(req.body.alias != ''){
-    client.query('SELECT * FROM tinyurltable WHERE alias=$1',[req.body.alias], (err, res) => {
+    client1.query('SELECT * FROM tinyurltable WHERE alias=$1',[req.body.alias], (err, res) => {
       // if (err) throw err;
       if(res.rowCount > 0){
+        client1.end();
         response.sendFile(__dirname + '/front/index.html');
         // Run alert/update page saying that alias is already registered
       }else{
+        client1.end();
+        client2.connect();
         // console.log([req.body.alias, req.body.url]);
-        client.query('INSERT INTO tinyurltable (alias, longurl) VALUES ($1,$2)', [req.body.alias, req.body.url], (err, res) => {
+        client2.query('INSERT INTO tinyurltable (alias, longurl) VALUES ($1,$2)', [req.body.alias, req.body.url], (err, res) => {
           console.log(err, res);
         });
+        client2.end();
         response.send('successful entry'); /* send page saying successful entering to db */
       }
       
-      client.end();  
     });
   }
  /* Send a html file instead confirming the request and whether they want to submit another one */
