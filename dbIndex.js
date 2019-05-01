@@ -117,9 +117,9 @@ app.post('/url',urlencodedParser,function(req,response){
     });      
   }else{
     // generate unique id as alias
-    ID().then (function(alias){
-      insert(alias, req.body.url).then(function(insertResult){
-
+    var alias = ID();
+    // .then (function(alias){
+    insert(alias, req.body.url).then(function(insertResult){
         if(insertResult){
           response.set('Content-Type', 'text/html');
           response.send(new Buffer(''+
@@ -139,10 +139,9 @@ app.post('/url',urlencodedParser,function(req,response){
         }
 
       });
-    });
   }
 });
-
+// END OF APP.POST FUNCTION
 
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
@@ -152,18 +151,18 @@ async function ID() {
    // Math.random should be unique because of its seeding algorithm.
   // Convert it to base 36 (numbers + letters), and grab the first 9 characters
   // after the decimal.
-  var possibleID = Math.random().toString(36).substr(2, 9);
-
-  inTable(possibleID).then(function(inTableResult){
-    if(inTableResult){
-      ID().then(function(alias){
-        return alias;
-      });
-    }else{
-      return possibleID;
-    }
-  });
-  
+  var goodID = '';
+  while(true){
+    var possibleID = Math.random().toString(36).substr(2, 9);
+    
+    inTable(possibleID).then(function(inTableResult){
+      if(!inTableResult){
+        goodID = possibleID;
+        return goodID;
+      }
+    });
+  }
+  // return goodID;
 }
 
 
