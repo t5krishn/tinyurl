@@ -73,7 +73,7 @@ app.post('/url',urlencodedParser,function(req,res){
     connectionString: process.env.DATABASE_URL,
     ssl: true,
   });  
-  if(req.body.alias != ''){
+  // if(req.body.alias != ''){
     client.query('SELECT * FROM tinyurltable', (err, res) => {
       if (err) throw err;
       // if(res.rowCount > 0){
@@ -89,7 +89,7 @@ app.post('/url',urlencodedParser,function(req,res){
       
       client.end();  
     });
-  }
+  // }
  /* Send a html file instead confirming the request and whether they want to submit another one */
   // ?first=firstname&last=lastname
 });
