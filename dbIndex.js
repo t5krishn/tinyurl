@@ -75,14 +75,19 @@ app.get('/r/:alias', function (req, response) {
 
 
 
-
+// APP POST GETS DATA FROM FORM IN FRONT/INDEX.HTML
+// DATA IS PARSED WITH BODY-PARSER AS URLENCODED STRING
+// req.body has obj of form {alias: "", url:""}
+// can access it for eg:  req.body.alias 
 app.post('/url',urlencodedParser,function(req,response){
   console.log(req.body.alias);
 
   if(req.body.alias != ''){/* IF ALIAS IS NOT EMPTY, IF IT'S EMPTY GENERATE A UNIQUE STRING AS ALIAS */
 
     inTable(req.body.alias).then(function(inTableResult){
-      if(inTableResult){
+      
+      // IF ALIAS SENT IN IS ALREADY IN THE TABLE, THEN SAY IT'S REGISTERED AND SHOW OPTIONS
+      if(inTableResult){ 
         response.set('Content-Type', 'text/html');
         response.send(new Buffer(''+
         '<h2> Alias already registered</h2>'+
@@ -92,9 +97,10 @@ app.post('/url',urlencodedParser,function(req,response){
         '<p>Or go to your url:</p>'+
         '<br><a href="https://t-tinyurl.herokuapp.com/r/'+req.body.alias+'"> t-tinyurl.herokuapp.com/r/'+req.body.alias+'</a>'));
   
+        // IF ALIAS IS NOT SENT IN THEN ATTEMPT TO INSERT INTO THE TABLE
       }else{
-        // var inserted = '';
         insert(req.body.alias, req.body.url).then(function(insertResult){
+          // IF INSERT WORKS, SHOULD RETURN TRUE SO SHOW SUCCESS AND TINYURL LINK
           if(insertResult){
             response.set('Content-Type', 'text/html');
             response.send(new Buffer(''+
@@ -104,7 +110,9 @@ app.post('/url',urlencodedParser,function(req,response){
             '<br><button onclick="location.href = \'https://t-tinyurl.herokuapp.com\';">tinyurl</button>'+
             '<p>Or go to your NEW url:</p>'+
             '<br><a href="https://t-tinyurl.herokuapp.com/r/'+req.body.alias+'"> t-tinyurl.herokuapp.com/r/'+req.body.alias+'</a>'));
-          }else{
+          }
+          // IF INSERT DOESN'T RESPOND WITH TRUE THEN SOMETHING WENT WRONG WITH INSERTION, ASK USER TO TRY AGAIN
+          else{
             response.set('Content-Type', 'text/html');
             response.send(new Buffer(''+
             '<h2> Alias register unsucessful!</h2>'+
@@ -115,10 +123,14 @@ app.post('/url',urlencodedParser,function(req,response){
         });
       }
     });      
-  }else{
+  }/* IF ALIAS IS NOT EMPTY , IF END */
+  
+  // IF ALIAS IS EMPTY, ELSE START
+  else{
+    // IF ALIAS IS EMPTY THEN GENERATE AN ALIAS THAT'S UNIQUE(TRIES TO BE)
     // generate unique id as alias
     var alias = Math.random().toString(36).substr(2, 9);
-    // .then (function(alias){
+
     insert(alias, req.body.url).then(function(insertResult){
         if(insertResult){
           response.set('Content-Type', 'text/html');
@@ -140,6 +152,8 @@ app.post('/url',urlencodedParser,function(req,response){
 
       });
   }
+  // IF ALIAS IS EMPTY, ELSE END
+
 });
 // END OF APP.POST FUNCTION
 
