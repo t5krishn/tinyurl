@@ -1,1 +1,1 @@
-web: node dbIndex.js
+web: node index.js
