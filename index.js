@@ -41,10 +41,11 @@ var urlencodedParser = bodyParser.urlencoded({extended: false});
 
 
 // Default html file for home page
-app.get('/', function (req, res) {
-  express.static('front');
-});
+// app.get('/', function (req, res) {
+//   res.sendFile(__dirname + '/front/index.html');
+// });
 
+app.use(express.static("front"));
 
 // Used one time to initalize the tinyurl db table, not needed anymore
 // Can be used to initialize new tables if needed
