@@ -1,4 +1,6 @@
-
+body{
+  background-color: aliceblue;
+}
 
 #form-title{
   font-family: 'Roboto Condensed Light', sans-serif;

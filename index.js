@@ -41,10 +41,13 @@ var urlencodedParser = bodyParser.urlencoded({extended: false});
 
 
 // Default html file for home page
+// PROBLEM: DID NOT SERVE CSS FILE AS WELL, SOLUTION WAS TO 
+//  - USE express.static and app.use
 // app.get('/', function (req, res) {
 //   res.sendFile(__dirname + '/front/index.html');
 // });
 
+// Default html file for home page served with css file
 app.use(express.static("front"));
 
 // Used one time to initalize the tinyurl db table, not needed anymore
@@ -69,6 +72,7 @@ app.use(express.static("front"));
 //  - if it does, redirect to link stored in db corresponding to alias
 //  - if not, show an error message and a link to redirect to main page to 
 //  - make a new tinyurl
+
 app.get('/r/:alias', function (req, response) {
   const client = new Client({
       connectionString: process.env.DATABASE_URL,
