@@ -1,0 +1,38 @@
+
+
+#form-title{
+  font-family: 'Roboto Condensed Light', sans-serif;
+}
+
+#form-container{
+  font-family: 'Roboto Condensed Light', sans-serif;
+  position: absolute;
+  text-align: left;
+  top: 20%;
+  left: 35%;
+  border: 2px solid grey;
+  background-color: antiquewhite;
+  padding: 10px;
+  font-size: 20px;
+  width: 400px;
+}
+
+textarea,#alias-textfield,#submit-button{
+  font-size: 20px;
+  font-family: 'Roboto Condensed Light', sans-serif;
+  
+}
+
+textarea{
+  width: 300px;
+  height: 100px;
+}
+
+
+#alias-eg{
+  background-color: rgb(255, 223, 155);
+}
+
+#prompt{
+  
+}

@@ -10,23 +10,25 @@
 </head>
 
 <body>
-    <h1> tiny url </h1>
+    <div id="form-container">
+        <h1 id="form-title"><u> tiny url </u></h1>
 
-    <form action = "/url" method="POST">
-        <label id = "prompt"> URL : </label>
-        <br>
-        <input type = "text" name = "url" id = "url_text">
-        <br>
-        <label id = "alias-label"> Alias (optional) : </label>
-        <br>
-        <div>https://t-tinyurl.herokuapp.com/r/Alias</div>
-        <input type = "text" name = "alias" id = "alias-textfield">
-        <br>
-        <input type = "submit" value = "Submit">
-        <div id = "url_res"> </div><!-- Server response printed to this div. Shortened url to this div-->
-    </form>
+        <form action = "/url" method="POST">
+            <label id = "url-prompt"> URL : </label>
+            <!-- <br> -->
+            <textarea name = "url" id = "url_text" cols="20" rows="1"></textarea>
+            <br>
+            <label id = "alias-label"> Alias (optional) : </label>
+            <!-- <br> -->
+            <div id="alias-eg">https://t-tinyurl.herokuapp.com/r/Alias</div>
+            <input type = "text" name = "alias" id = "alias-textfield">
+            <br>
+            <input type = "submit" value = "Submit" id="submit-button">
+            <div id = "url_res"> </div><!-- Server response printed to this div. Shortened url to this div-->
+        </form>
+    </div>
 
-    <script src="index.js"></script>
+    <script src="/index.js"></script>
 </body>
 
 </html>
