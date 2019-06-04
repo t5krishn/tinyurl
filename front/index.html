@@ -15,15 +15,19 @@
 
         <form action = "/url" method="POST">
             <label id = "url-prompt"> URL : </label>
-            <!-- <br> -->
+
             <textarea name = "url" id = "url_text" cols="20" rows="1"></textarea>
+            
             <br>
+            
             <label id = "alias-label"> Alias (optional) : </label>
-            <!-- <br> -->
-            <div id="alias-eg">https://t-tinyurl.herokuapp.com/r/Alias</div>
+            
             <input type = "text" name = "alias" id = "alias-textfield">
-            <br>
+            
+            <div id="alias-eg">E.g.: https://t-tinyurl.herokuapp.com/r/Alias</div>
+            
             <input type = "submit" value = "Submit" id="submit-button">
+            
             <div id = "url_res"> </div><!-- Server response printed to this div. Shortened url to this div-->
         </form>
     </div>
