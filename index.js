@@ -1,6 +1,6 @@
 /*jshint esversion: 8 */
 
-// MAIN FILE OF TINYURL APP
+// MAIN FILE OF TINYURL APP: index.js
 // REQUIREMENTS: Make an app that takes in a url and an alias(optional)
 //    - and return a link for it that is "shorter" incorporating the 
 //    - alias if there is one given, or generate a unique url
@@ -10,7 +10,7 @@
 
 
 
-// REQUIREMENTS
+// IMPORTS
 var express = require('express');
 var app = express();
 var { Client }  = require('pg');
@@ -42,7 +42,7 @@ var urlencodedParser = bodyParser.urlencoded({extended: false});
 
 // Default html file for home page
 app.get('/', function (req, res) {
-  res.sendFile(__dirname + '/front/index.html');
+  express.static('front');
 });
 
 
